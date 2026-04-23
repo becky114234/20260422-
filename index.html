@@ -1,240 +1,449 @@
 <!DOCTYPE html>
-<!-- HTML5 文件聲明 -->
 <html lang="zh-TW">
-<!-- 設置語言為繁體中文 -->
 <head>
-<!-- 頁面頭部，包含元數據和樣式 -->
 <meta charset="UTF-8">
-<!-- 設置字符編碼為 UTF-8 -->
-<title>我的數位基地</title>
-<!-- 頁面標題 -->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>許雅淇 · Yaqi</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400&family=DM+Serif+Display:ital@0;1&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* 全局樣式設置 */
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: #e2e8f0;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* 頁面頭部樣式 */
-header {
-  text-align: center;
-  padding: 20px;
-  font-size: 28px;
-  background: #020617;
-}
-
-/* 容器樣式，使用網格佈局 */
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-  padding: 15px;
-}
-
-/* 卡片樣式 */
-.card {
-  background: #020617;
-  padding: 15px;
-  border-radius: 12px;
-}
-
-/* 卡片標題樣式 */
-h2 {
-  margin: 0 0 10px;
-  font-size: 18px;
-}
-
-/* 任務項目樣式，可點擊 */
-.task {
-  cursor: pointer;
-  margin: 5px 0;
-}
-
-/* 完成任務樣式 */
-.done {
-  text-decoration: line-through;
-  color: #22c55e;
-}
-
-/* 進度條容器 */
-.bar {
-  background: #1e293b;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 5px 0;
-}
-
-/* 進度條填充 */
-.fill {
-  height: 10px;
-  width: 0;
-  background: #38bdf8;
-  transition: 1s;
-}
-
-/* 經驗值盒子 */
-.expBox {
-  margin-top: 10px;
-}
-
-/* 經驗值條 */
-.expBar {
-  height: 12px;
-  background: #22c55e;
-  width: 0%;
-  transition: 0.5s;
-}
-
-/* 按鈕樣式 */
-button {
-  margin-top: 8px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* 連結樣式 */
-a {
-  color: #38bdf8;
-  display: block;
-}
-</style>
-</head>
-
-<body>
-<!-- 頁面主體內容 -->
-
-<header>🚀 我的數位基地</header>
-<!-- 頁面標題頭部 -->
-
-<div class="container">
-<!-- 主要內容容器，使用網格佈局 -->
-
-<!-- 👤 狀態卡片 -->
-<div class="card">
-  <h2>👤 狀態</h2>
-  <div>少看漂亮宇智波</div>
-  <div id="status">🟢 在線學習</div>
-  <button onclick="changeStatus()">切換狀態</button>
-</div>
-
-<!-- 🎯 任務卡片 -->
-<div class="card">
-  <h2>🎯 任務</h2>
-  <div class="task" onclick="completeTask(this)">[ ] LeetCode</div>
-  <div class="task" onclick="completeTask(this)">[ ] Java學習</div>
-  <div class="task" onclick="completeTask(this)">[ ] 打遊戲</div>
-
-  <div class="expBox">
-    等級 Lv.<span id="level">1</span>
-    <div class="bar">
-      <div class="expBar" id="expBar"></div>
-    </div>
-  </div>
-</div>
-
-<!-- 📊 技能卡片 -->
-<div class="card">
-  <h2>📊 技能</h2>
-
-  Java
-  <div class="bar"><div class="fill" data="70"></div></div>
-
-  英文
-  <div class="bar"><div class="fill" data="50"></div></div>
-
-  演算法
-  <div class="bar"><div class="fill" data="30"></div></div>
-</div>
-
-<!-- 🎮 興趣卡片 -->
-<div class="card">
-  <h2>🎮 興趣</h2>
-  <div>Honkai: Star Rail</div>
-  <div>Genshin Impact</div>
-  <div>Arknights</div>
-  <div>Pikmin Bloom</div>
-  <div>學習 Java</div>
-  <div>看小說</div>
-</div>
-
-<!-- 🔗 連結卡片 -->
-<div class="card">
-  <h2>🔗 快速入口</h2>
-  <a href="https://leetcode.com" target="_blank">LeetCode</a>
-  <a href="https://youtube.com" target="_blank">YouTube</a>
-  <a href="https://github.com" target="_blank">GitHub</a>
-</div>
-
-<!-- 📝 日誌卡片 -->
-<div class="card">
-  <h2>📝 日誌</h2>
-  <input id="input" placeholder="寫點今天的事">
-  <button onclick="addDiary()">新增</button>
-  <div id="diary"></div>
-</div>
-
-</div>
-
-<script>
-// JavaScript 腳本開始
-
-// 狀態切換變數
-let states = ["🟢 在線學習","🎮 遊戲中","☕ 耍廢中"];
-let s = 0;
-
-// 切換狀態函數
-function changeStatus(){
-  s = (s+1)%states.length;
-  document.getElementById("status").innerText = states[s];
-}
-
-// EXP系統變數
-let exp = 0;
-let level = 1;
-
-// 完成任務函數
-function completeTask(el){
-  if(el.classList.contains("done")) return;
-
-  el.classList.add("done");
-  exp += 20;
-
-  if(exp >= 100){
-    exp = 0;
-    level++;
-    alert("🎉 升級！現在 Lv." + level);
+  :root {
+    --bg: #F5F2EC;
+    --surface: #EDEAE2;
+    --ink: #1C1A16;
+    --ink-muted: #6B6860;
+    --accent: #7B6FAD;
+    --accent-light: #E8E4F5;
+    --line: rgba(28,26,22,0.12);
   }
 
-  document.getElementById("level").innerText = level;
-  document.getElementById("expBar").style.width = exp + "%";
-}
+  html { scroll-behavior: smooth; }
 
-// 日誌函數
-function addDiary(){
-  let input = document.getElementById("input");
-  if(input.value.trim() === "") return;
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Karla', 'Noto Serif TC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-  let div = document.createElement("div");
-  div.innerText = input.value;
-  document.getElementById("diary").prepend(div);
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(245,242,236,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid var(--line);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
 
-  input.value = "";
-}
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 6rem 3rem 3rem;
+    gap: 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-text { padding-top: 2rem; }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-motto {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    line-height: 2;
+    margin-bottom: 2rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--accent-light);
+  }
+  .hero-intro {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--ink);
+    max-width: 440px;
+  }
 
-// 頁面載入後執行技能動畫
-window.onload = ()=>{
-  document.querySelectorAll(".fill").forEach(bar=>{
-    bar.style.width = bar.getAttribute("data") + "%";
-  });
-}
-</script>
+  /* DECO CARD */
+  .hero-deco {
+    position: relative;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .deco-card {
+    width: 320px; height: 420px;
+    background: var(--surface);
+    border-radius: 2px;
+    border: 0.5px solid var(--line);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .deco-blob {
+    position: absolute; top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    opacity: 0.6;
+  }
+  .deco-blob2 {
+    position: absolute; bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: #F0ECD5;
+    opacity: 0.8;
+  }
+  .deco-char {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-60%);
+    font-family: 'DM Serif Display', serif;
+    font-size: 7rem;
+    color: var(--ink);
+    opacity: 0.06;
+    user-select: none;
+    line-height: 1;
+  }
+  .deco-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    position: relative; z-index: 1;
+  }
+  .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border: 0.5px solid var(--line);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.6);
+    color: var(--ink-muted);
+  }
+  .tag.accent {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* SECTION */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--line);
+  }
+
+  /* INTERESTS GRID */
+  .interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+  .interest-card {
+    background: var(--surface);
+    border: 0.5px solid var(--line);
+    padding: 2rem 1.5rem;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+  .interest-card:hover {
+    transform: translateY(-4px);
+  }
+  .interest-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .interest-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+  .interest-desc {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+  .interest-num {
+    position: absolute;
+    top: 1rem; right: 1.25rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ABOUT STRIP */
+  .about-strip {
+    background: var(--surface);
+    border: 0.5px solid var(--line);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    align-items: center;
+    border-radius: 2px;
+  }
+  .about-label-big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--ink);
+    opacity: 0.08;
+    user-select: none;
+  }
+  .about-week { margin-top: 1.5rem; }
+  .week-row {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+  }
+  .day {
+    flex: 1;
+    height: 40px;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--bg);
+    color: var(--ink-muted);
+    border: 0.5px solid var(--line);
+  }
+  .day.happy {
+    background: var(--accent);
+    color: white;
+    font-weight: 500;
+  }
+  .day.emo {
+    background: #e8e0f0;
+    color: var(--accent);
+  }
+  .about-text {
+    font-size: 1rem;
+    line-height: 2;
+    color: var(--ink);
+  }
+  .about-text p + p { margin-top: 1rem; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem;
+    border-top: 0.5px solid var(--line);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.25s; }
+  .delay-3 { animation-delay: 0.4s; }
+  .delay-4 { animation-delay: 0.55s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 5rem 1.5rem 3rem;
+      gap: 2.5rem;
+    }
+    .hero-deco { display: none; }
+    section { padding: 3.5rem 1.5rem; }
+    .about-strip {
+      grid-template-columns: 1fr;
+      padding: 2rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">YQ</a>
+  <ul class="nav-links">
+    <li><a href="#interests">興趣</a></li>
+    <li><a href="#about">關於我</a></li>
+  </ul>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow fade-up">Personal Page</p>
+      <h1 class="hero-name fade-up delay-1">許<em>雅</em>淇</h1>
+      <blockquote class="hero-motto fade-up delay-2">
+        沒出息沒關係，<br>有氣息就已經很棒了。
+      </blockquote>
+      <p class="hero-intro fade-up delay-3">
+        一個喜歡小說、日文、遊戲的 I 人。<br>
+        平凡地活著，偶爾讓自己 emo 一下，<br>也是生活的一部分。
+      </p>
+    </div>
+
+    <div class="hero-deco fade-up delay-4">
+      <div class="deco-card">
+        <div class="deco-blob"></div>
+        <div class="deco-blob2"></div>
+        <span class="deco-char">淇</span>
+        <div class="deco-tags">
+          <span class="tag accent">I 人</span>
+          <span class="tag">音樂</span>
+          <span class="tag">閱讀</span>
+          <span class="tag">遊戲</span>
+          <span class="tag">電影・動漫</span>
+          <span class="tag">繪畫・藝術</span>
+          <span class="tag accent">週五 lover</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="interests">
+    <p class="section-label">Interests · 我的興趣</p>
+    <div class="interests-grid">
+      <div class="interest-card">
+        <span class="interest-num">01</span>
+        <span class="interest-icon">🎵</span>
+        <p class="interest-title">音樂</p>
+        <p class="interest-desc">用耳機隔絕世界，用旋律填滿心裡的空白。</p>
+      </div>
+      <div class="interest-card">
+        <span class="interest-num">02</span>
+        <span class="interest-icon">📖</span>
+        <p class="interest-title">閱讀</p>
+        <p class="interest-desc">小說是平行宇宙，讓 I 人能安靜地逃去別的地方。</p>
+      </div>
+      <div class="interest-card">
+        <span class="interest-num">03</span>
+        <span class="interest-icon">🎮</span>
+        <p class="interest-title">遊戲</p>
+        <p class="interest-desc">一個人也可以玩得很開心，這就是遊戲的魅力。</p>
+      </div>
+      <div class="interest-card">
+        <span class="interest-num">04</span>
+        <span class="interest-icon">🎬</span>
+        <p class="interest-title">電影・動漫</p>
+        <p class="interest-desc">看別人的故事，偷偷感受那些說不出口的情緒。</p>
+      </div>
+      <div class="interest-card">
+        <span class="interest-num">05</span>
+        <span class="interest-icon">🎨</span>
+        <p class="interest-title">繪畫・藝術</p>
+        <p class="interest-desc">不一定畫得好，但畫畫的時候腦子是安靜的。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <p class="section-label">About · 關於我</p>
+    <div class="about-strip">
+      <div class="about-left">
+        <div class="about-label-big">Week</div>
+        <div class="about-week">
+          <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.4rem;">我的一週心情表</p>
+          <div class="week-row">
+            <div class="day">一</div>
+            <div class="day">二</div>
+            <div class="day">三</div>
+            <div class="day">四</div>
+            <div class="day happy">五 ✦</div>
+            <div class="day happy">六 ✦</div>
+            <div class="day emo">日</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="about-text">
+          <p>
+            我是一個標準的 I 人——喜歡小說、日文和遊戲，
+            享受獨處時光，不太需要外界的熱鬧來充電。
+          </p>
+          <p>
+            一個禮拜最開心的時刻是禮拜五的下班前，
+            還有禮拜六整個晚上。
+            至於禮拜日嘛⋯⋯隔天就要上班了，
+            我需要留一點時間讓自己好好 emo 一下。
+          </p>
+          <p style="color:var(--ink-muted);font-size:0.9rem;margin-top:1.5rem;font-style:italic;">
+            沒出息沒關係，有氣息就已經很棒了。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 許雅淇 · Made with a little bit of emo energy
+</footer>
 
 </body>
-<!-- 頁面主體結束 -->
 </html>
-<!-- HTML 文件結束 -->
