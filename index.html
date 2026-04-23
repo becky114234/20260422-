@@ -1,81 +1,208 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>我的數位基地</title>
 
-public class PersonalDashboard {
-
-    private static String[] states = {"🟢 在線學習", "🎮 遊戲中", "☕ 耍廢中"};
-    private static int stateIndex = 0;
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("🚀 我的數位基地");
-        frame.setSize(600, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(2, 2, 10, 10));
-
-        // 👤 狀態卡
-        JPanel statusPanel = new JPanel();
-        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
-        JLabel name = new JLabel("霧蝶");
-        JLabel quote = new JLabel("今天也在升級自己");
-        JLabel status = new JLabel(states[stateIndex]);
-        JButton changeBtn = new JButton("切換狀態");
-
-        changeBtn.addActionListener(e -> {
-            stateIndex = (stateIndex + 1) % states.length;
-            status.setText(states[stateIndex]);
-        });
-
-        statusPanel.add(name);
-        statusPanel.add(quote);
-        statusPanel.add(status);
-        statusPanel.add(changeBtn);
-
-        // 🎯 任務
-        JPanel taskPanel = new JPanel();
-        taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.Y_AXIS));
-
-        JCheckBox task1 = new JCheckBox("LeetCode 1題");
-        JCheckBox task2 = new JCheckBox("Java學習30分鐘");
-        JCheckBox task3 = new JCheckBox("打一場遊戲");
-
-        taskPanel.add(task1);
-        taskPanel.add(task2);
-        taskPanel.add(task3);
-
-        // 📊 技能
-        JPanel skillPanel = new JPanel();
-        skillPanel.setLayout(new GridLayout(3, 1));
-
-        skillPanel.add(new JProgressBar(0, 100) {{ setValue(70); setString("Java 70%"); setStringPainted(true); }});
-        skillPanel.add(new JProgressBar(0, 100) {{ setValue(50); setString("英文 50%"); setStringPainted(true); }});
-        skillPanel.add(new JProgressBar(0, 100) {{ setValue(30); setString("演算法 30%"); setStringPainted(true); }});
-
-        // 📝 日誌
-        JPanel diaryPanel = new JPanel();
-        diaryPanel.setLayout(new BorderLayout());
-
-        JTextField input = new JTextField();
-        JButton addBtn = new JButton("新增");
-        JTextArea diaryArea = new JTextArea();
-        diaryArea.setEditable(false);
-
-        addBtn.addActionListener(e -> {
-            if (!input.getText().trim().isEmpty()) {
-                diaryArea.insert(input.getText() + "\n", 0);
-                input.setText("");
-            }
-        });
-
-        diaryPanel.add(input, BorderLayout.NORTH);
-        diaryPanel.add(new JScrollPane(diaryArea), BorderLayout.CENTER);
-        diaryPanel.add(addBtn, BorderLayout.SOUTH);
-
-        frame.add(statusPanel);
-        frame.add(taskPanel);
-        frame.add(skillPanel);
-        frame.add(diaryPanel);
-
-        frame.setVisible(true);
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: #e2e8f0;
 }
+
+header {
+  text-align: center;
+  padding: 20px;
+  font-size: 28px;
+  background: #020617;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  padding: 15px;
+}
+
+.card {
+  background: #020617;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.task {
+  cursor: pointer;
+  margin: 5px 0;
+}
+
+.done {
+  text-decoration: line-through;
+  color: #22c55e;
+}
+
+.bar {
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.fill {
+  height: 10px;
+  width: 0;
+  background: #38bdf8;
+  transition: 1s;
+}
+
+.expBox {
+  margin-top: 10px;
+}
+
+.expBar {
+  height: 12px;
+  background: #22c55e;
+  width: 0%;
+  transition: 0.5s;
+}
+
+button {
+  margin-top: 8px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+a {
+  color: #38bdf8;
+  display: block;
+}
+</style>
+</head>
+
+<body>
+
+<header>🚀 我的數位基地</header>
+
+<div class="container">
+
+<!-- 👤 狀態 -->
+<div class="card">
+  <h2>👤 狀態</h2>
+  <div>霧蝶</div>
+  <div id="status">🟢 在線學習</div>
+  <button onclick="changeStatus()">切換狀態</button>
+</div>
+
+<!-- 🎯 任務 -->
+<div class="card">
+  <h2>🎯 任務</h2>
+  <div class="task" onclick="completeTask(this)">[ ] LeetCode</div>
+  <div class="task" onclick="completeTask(this)">[ ] Java學習</div>
+  <div class="task" onclick="completeTask(this)">[ ] 打遊戲</div>
+
+  <div class="expBox">
+    等級 Lv.<span id="level">1</span>
+    <div class="bar">
+      <div class="expBar" id="expBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 📊 技能 -->
+<div class="card">
+  <h2>📊 技能</h2>
+
+  Java
+  <div class="bar"><div class="fill" data="70"></div></div>
+
+  英文
+  <div class="bar"><div class="fill" data="50"></div></div>
+
+  演算法
+  <div class="bar"><div class="fill" data="30"></div></div>
+</div>
+
+<!-- 🎮 興趣 -->
+<div class="card">
+  <h2>🎮 興趣</h2>
+  <div>Honkai: Star Rail</div>
+  <div>學習 Java</div>
+</div>
+
+<!-- 🔗 連結 -->
+<div class="card">
+  <h2>🔗 快速入口</h2>
+  <a href="https://leetcode.com" target="_blank">LeetCode</a>
+  <a href="https://youtube.com" target="_blank">YouTube</a>
+  <a href="https://github.com" target="_blank">GitHub</a>
+</div>
+
+<!-- 📝 日誌 -->
+<div class="card">
+  <h2>📝 日誌</h2>
+  <input id="input" placeholder="寫點今天的事">
+  <button onclick="addDiary()">新增</button>
+  <div id="diary"></div>
+</div>
+
+</div>
+
+<script>
+let states = ["🟢 在線學習","🎮 遊戲中","☕ 耍廢中"];
+let s = 0;
+
+function changeStatus(){
+  s = (s+1)%states.length;
+  document.getElementById("status").innerText = states[s];
+}
+
+// EXP系統
+let exp = 0;
+let level = 1;
+
+function completeTask(el){
+  if(el.classList.contains("done")) return;
+
+  el.classList.add("done");
+  exp += 20;
+
+  if(exp >= 100){
+    exp = 0;
+    level++;
+    alert("🎉 升級！現在 Lv." + level);
+  }
+
+  document.getElementById("level").innerText = level;
+  document.getElementById("expBar").style.width = exp + "%";
+}
+
+// 日誌
+function addDiary(){
+  let input = document.getElementById("input");
+  if(input.value.trim() === "") return;
+
+  let div = document.createElement("div");
+  div.innerText = input.value;
+  document.getElementById("diary").prepend(div);
+
+  input.value = "";
+}
+
+// 技能動畫
+window.onload = ()=>{
+  document.querySelectorAll(".fill").forEach(bar=>{
+    bar.style.width = bar.getAttribute("data") + "%";
+  });
+}
+</script>
+
+</body>
+</html>
