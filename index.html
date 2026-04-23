@@ -1,14 +1,81 @@
-<!DOCTYPE html>
-<html lang="zh-tw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 介紹範例</title>
-</head>
-<body>
-    <h1>歡迎來到我的第一個網頁</h1>
-    <p>這是一個簡單的 HTML 頁面範例，用來介紹基本的 HTML 元素。</p>
-    
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-    
-    
+public class PersonalDashboard {
+
+    private static String[] states = {"🟢 在線學習", "🎮 遊戲中", "☕ 耍廢中"};
+    private static int stateIndex = 0;
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("🚀 我的數位基地");
+        frame.setSize(600, 500);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(2, 2, 10, 10));
+
+        // 👤 狀態卡
+        JPanel statusPanel = new JPanel();
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+        JLabel name = new JLabel("霧蝶");
+        JLabel quote = new JLabel("今天也在升級自己");
+        JLabel status = new JLabel(states[stateIndex]);
+        JButton changeBtn = new JButton("切換狀態");
+
+        changeBtn.addActionListener(e -> {
+            stateIndex = (stateIndex + 1) % states.length;
+            status.setText(states[stateIndex]);
+        });
+
+        statusPanel.add(name);
+        statusPanel.add(quote);
+        statusPanel.add(status);
+        statusPanel.add(changeBtn);
+
+        // 🎯 任務
+        JPanel taskPanel = new JPanel();
+        taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.Y_AXIS));
+
+        JCheckBox task1 = new JCheckBox("LeetCode 1題");
+        JCheckBox task2 = new JCheckBox("Java學習30分鐘");
+        JCheckBox task3 = new JCheckBox("打一場遊戲");
+
+        taskPanel.add(task1);
+        taskPanel.add(task2);
+        taskPanel.add(task3);
+
+        // 📊 技能
+        JPanel skillPanel = new JPanel();
+        skillPanel.setLayout(new GridLayout(3, 1));
+
+        skillPanel.add(new JProgressBar(0, 100) {{ setValue(70); setString("Java 70%"); setStringPainted(true); }});
+        skillPanel.add(new JProgressBar(0, 100) {{ setValue(50); setString("英文 50%"); setStringPainted(true); }});
+        skillPanel.add(new JProgressBar(0, 100) {{ setValue(30); setString("演算法 30%"); setStringPainted(true); }});
+
+        // 📝 日誌
+        JPanel diaryPanel = new JPanel();
+        diaryPanel.setLayout(new BorderLayout());
+
+        JTextField input = new JTextField();
+        JButton addBtn = new JButton("新增");
+        JTextArea diaryArea = new JTextArea();
+        diaryArea.setEditable(false);
+
+        addBtn.addActionListener(e -> {
+            if (!input.getText().trim().isEmpty()) {
+                diaryArea.insert(input.getText() + "\n", 0);
+                input.setText("");
+            }
+        });
+
+        diaryPanel.add(input, BorderLayout.NORTH);
+        diaryPanel.add(new JScrollPane(diaryArea), BorderLayout.CENTER);
+        diaryPanel.add(addBtn, BorderLayout.SOUTH);
+
+        frame.add(statusPanel);
+        frame.add(taskPanel);
+        frame.add(skillPanel);
+        frame.add(diaryPanel);
+
+        frame.setVisible(true);
+    }
+}
